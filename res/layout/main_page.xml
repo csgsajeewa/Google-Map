@@ -36,4 +36,15 @@
         android:text="Go To Map Database" 
         android:onClick="showMapDB"/>
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mapDBButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="26dp"
+        android:text="Go To Search" 
+        android:onClick="goToSearch"/>
+
 </RelativeLayout>

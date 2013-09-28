@@ -1,18 +1,22 @@
 package com.example.googlemaps;
 
 
+import android.app.SearchManager;
+import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
-public class MapDatabase {
+public class MapDatabase extends ContentProvider{
   
   public static final String KEY_ID = "_id";
-  
+  public static final String SUGGEST_COLUMN_TEXT_1="suggest_text_1";
+  public static final String SUGGEST_COLUMN_INTENT_DATA_ID="suggest_intent_data_id";
   //The name and column index of each column in your database.
   //These should be descriptive.
   public static final String PLACE =   "PLACE";
@@ -24,6 +28,10 @@ public class MapDatabase {
 
   // Database open/upgrade helper
   private MapDBOpenHelper mapDBOpenHelper;
+   public MapDatabase() {
+	
+    }
+
 
   public MapDatabase(Context context) {
     mapDBOpenHelper = new MapDBOpenHelper(context, MapDBOpenHelper.DATABASE_NAME, null, 
@@ -35,6 +43,7 @@ public class MapDatabase {
     mapDBOpenHelper.close();
   }
 
+  
   private Cursor getPlaceLongLat(String place1) {
     
     // Specify the result column projection. Return the minimum set
@@ -43,7 +52,7 @@ public class MapDatabase {
       KEY_ID, PLACE,LATITUDE,LONGITUDE }; 
     
     // Specify the where clause that will limit our results.
-    String where = PLACE + "=" +"'"+ place1 + "'";
+    String where = SUGGEST_COLUMN_TEXT_1 + "=" +"'"+ place1 + "'";
     
     // Replace these with valid SQL statements as necessary.
     String whereArgs[] = null;
@@ -101,6 +110,8 @@ public class MapDatabase {
   
     // Assign values for each row.
     newValues.put(PLACE, place);
+    newValues.put(SUGGEST_COLUMN_TEXT_1 , place);
+    newValues.put(SUGGEST_COLUMN_INTENT_DATA_ID , place);
     newValues.put(LATITUDE, latitude);
     newValues.put(LONGITUDE, longitude);
     // [ ... Repeat for each column / value pair ... ]
@@ -140,7 +151,7 @@ public class MapDatabase {
    */
   private static class MapDBOpenHelper extends SQLiteOpenHelper {
     
-    private static final String DATABASE_NAME = "MapDatabase.db";
+    private static final String DATABASE_NAME = "MapDatabase6.db";
     private static final String DATABASE_TABLE = "PLACES";
     private static final int DATABASE_VERSION = 1;
     
@@ -149,6 +160,8 @@ public class MapDatabase {
       DATABASE_TABLE + " (" + KEY_ID +
       " integer primary key autoincrement, " +
      PLACE + " text not null, " +
+     SUGGEST_COLUMN_TEXT_1  + " text not null, " +
+     SUGGEST_COLUMN_INTENT_DATA_ID + " text not null, " +
      LATITUDE + " double, " +
      LONGITUDE + " double);";
 
@@ -185,4 +198,65 @@ public class MapDatabase {
       onCreate(db);
     }
   }
+
+
+@Override
+public int delete(Uri arg0, String arg1, String[] arg2) {
+	// TODO Auto-generated method stub
+	return 0;
+}
+
+@Override
+public String getType(Uri arg0) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Uri insert(Uri arg0, ContentValues arg1) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public boolean onCreate() {
+	
+		mapDBOpenHelper = new MapDBOpenHelper(getContext(), MapDBOpenHelper.DATABASE_NAME, null, MapDBOpenHelper.DATABASE_VERSION);
+		return true;
+	
+
+}
+
+@Override
+public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
+		String arg4) {
+
+	Log.w("dsdsd","sdsdsdsddsds");
+	 String[] result_columns = new String[] {  KEY_ID, SUGGEST_COLUMN_TEXT_1}; 
+		 
+		    // Specify the where clause that will limit our results.
+	  String query = arg0.getLastPathSegment();
+		    String where = SUGGEST_COLUMN_TEXT_1+ " Like "+"'%"+ query +"%'";
+		    
+		    // Replace these with valid SQL statements as necessary.
+		    String whereArgs[] = null;
+		    String groupBy = null;
+		    String having = null;
+		    String order = null;
+		  
+		    SQLiteDatabase db = mapDBOpenHelper.getWritableDatabase();
+		    Cursor cursor = db.query(MapDBOpenHelper.DATABASE_TABLE,  result_columns, where,whereArgs, groupBy, having, order);
+		   Cursor c=cursor;
+		    return cursor;
+	  
+}
+
+@Override
+public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
+	// TODO Auto-generated method stub
+	return 0;
+}
+
+
+
 }

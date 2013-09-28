@@ -37,6 +37,13 @@ public class MainActivity extends Activity{
  		startActivity(intent);
  		
  	}
+     
+     public void goToSearch(View view){
+  		
+  		Intent intent = new Intent(this, SearchEngine.class);
+  		startActivity(intent);
+  		
+  	}
 	
 
     

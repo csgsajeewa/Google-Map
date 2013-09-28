@@ -11,26 +11,29 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="35dp"
-        android:text="Button" />
+        android:text="Show Map" 
+        android:onClick="showMap"/>
 
     <Button
         android:id="@+id/showUserLocationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
+        android:layout_above="@+id/showMapButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="14dp"
-        android:text="Button" />
+        android:text="Show My Location" 
+        android:onClick="showMyLocation"/>
 
     <Button
         android:id="@+id/mapDBButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
+        android:layout_above="@+id/showUserLocationButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="18dp"
-        android:text="Go To Map Database" />
+        android:text="Go To Map Database" 
+        android:onClick="showMapDB"/>
 
 </RelativeLayout>

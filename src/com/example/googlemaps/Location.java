@@ -1,4 +1,10 @@
 package com.example.googlemaps;
+/**
+ * Description of LocationInfo
+ *
+ * @author chamath sajeewa
+ * chamaths.10@cse.mrt.ac.lk
+ */
 
 public class Location {
 	

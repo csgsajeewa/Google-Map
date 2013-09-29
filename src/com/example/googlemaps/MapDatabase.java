@@ -1,5 +1,10 @@
 package com.example.googlemaps;
-
+/**
+ * Description of MapDatabase
+ *
+ * @author chamath sajeewa
+ * chamaths.10@cse.mrt.ac.lk
+ */
 
 import android.app.SearchManager;
 import android.content.ContentProvider;
@@ -16,7 +21,7 @@ public class MapDatabase extends ContentProvider{
   
   public static final String KEY_ID = "_id";
   public static final String SUGGEST_COLUMN_TEXT_1="suggest_text_1";
-  public static final String SUGGEST_COLUMN_INTENT_DATA_ID="suggest_intent_data_id";
+  public static final String SUGGEST_COLUMN_INTENT_DATA="suggest_intent_data";
   //The name and column index of each column in your database.
   //These should be descriptive.
   public static final String PLACE =   "PLACE";
@@ -52,7 +57,7 @@ public class MapDatabase extends ContentProvider{
       KEY_ID, PLACE,LATITUDE,LONGITUDE }; 
     
     // Specify the where clause that will limit our results.
-    String where = SUGGEST_COLUMN_TEXT_1 + "=" +"'"+ place1 + "'";
+    String where = SUGGEST_COLUMN_INTENT_DATA + "=" +"'"+ place1 + "'";
     
     // Replace these with valid SQL statements as necessary.
     String whereArgs[] = null;
@@ -111,7 +116,7 @@ public class MapDatabase extends ContentProvider{
     // Assign values for each row.
     newValues.put(PLACE, place);
     newValues.put(SUGGEST_COLUMN_TEXT_1 , place);
-    newValues.put(SUGGEST_COLUMN_INTENT_DATA_ID , place);
+    newValues.put(SUGGEST_COLUMN_INTENT_DATA , place);
     newValues.put(LATITUDE, latitude);
     newValues.put(LONGITUDE, longitude);
     // [ ... Repeat for each column / value pair ... ]
@@ -151,7 +156,7 @@ public class MapDatabase extends ContentProvider{
    */
   private static class MapDBOpenHelper extends SQLiteOpenHelper {
     
-    private static final String DATABASE_NAME = "MapDatabase6.db";
+    private static final String DATABASE_NAME = "MapDatabase7.db";
     private static final String DATABASE_TABLE = "PLACES";
     private static final int DATABASE_VERSION = 1;
     
@@ -161,7 +166,7 @@ public class MapDatabase extends ContentProvider{
       " integer primary key autoincrement, " +
      PLACE + " text not null, " +
      SUGGEST_COLUMN_TEXT_1  + " text not null, " +
-     SUGGEST_COLUMN_INTENT_DATA_ID + " text not null, " +
+     SUGGEST_COLUMN_INTENT_DATA + " text not null, " +
      LATITUDE + " double, " +
      LONGITUDE + " double);";
 
@@ -193,7 +198,7 @@ public class MapDatabase extends ContentProvider{
       // comparing oldVersion and newVersion values.
 
       // The simplest case is to drop the old table and create a new one.
-      db.execSQL("DROP TABLE IF IT EXISTS " + DATABASE_TABLE);
+      db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
       // Create a new one.
       onCreate(db);
     }
@@ -232,7 +237,7 @@ public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
 		String arg4) {
 
 	Log.w("dsdsd","sdsdsdsddsds");
-	 String[] result_columns = new String[] {  KEY_ID, SUGGEST_COLUMN_TEXT_1}; 
+	 String[] result_columns = new String[] {  KEY_ID, SUGGEST_COLUMN_TEXT_1,SUGGEST_COLUMN_INTENT_DATA}; 
 		 
 		    // Specify the where clause that will limit our results.
 	  String query = arg0.getLastPathSegment();

@@ -1,4 +1,11 @@
 package com.example.googlemaps;
+/**
+ * Description of DBActivity
+ * create and update the database
+ *
+ * @author chamath sajeewa
+ * chamaths.10@cse.mrt.ac.lk
+ */
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,8 +67,7 @@ public class DBActivity extends Activity implements AsyncResponse{
 		    	mapDatabase.addNewPlace(tempLocation.getName(), tempLocation.getLatitude(),tempLocation.getLongitude());
 		    }
 			
-			//mapDatabase.addNewPlace("Female Hostel", 6.797016,79.902593);
-			//mapDatabase.addNewPlace("Male Hostel", 6.797692,79.902464);
+			
 			
 			geoCodes=mapDatabase.getPlaceInfo("Library");
 			

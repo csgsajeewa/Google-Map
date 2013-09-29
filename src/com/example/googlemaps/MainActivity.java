@@ -25,12 +25,12 @@ public class MainActivity extends Activity{
 		
 	}
     
-     public void showMyLocation(View view){
+   //  public void showMyLocation(View view){
 		
-		Intent intent = new Intent(this, UserLocation.class);
-		startActivity(intent);
+	//	Intent intent = new Intent(this, UserLocation.class);
+	//	startActivity(intent);
 		
-	}
+	//}
      public void showMapDB(View view){
  		
  		Intent intent = new Intent(this, DBActivity.class);
@@ -38,12 +38,12 @@ public class MainActivity extends Activity{
  		
  	}
      
-     public void goToSearch(View view){
+   //  public void goToSearch(View view){
   		
-  		Intent intent = new Intent(this, SearchEngine.class);
-  		startActivity(intent);
+  	//	Intent intent = new Intent(this, SearchEngine.class);
+  //		startActivity(intent);
   		
-  	}
+  //	}
 	
 
     

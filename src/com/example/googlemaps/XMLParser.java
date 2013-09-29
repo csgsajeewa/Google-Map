@@ -1,5 +1,10 @@
 package com.example.googlemaps;
-
+/**
+ * Description of XML Parser
+ *
+ * @author chamath sajeewa
+ * chamaths.10@cse.mrt.ac.lk
+ */
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,9 +17,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.google.android.gms.internal.n;
-
 import android.util.Log;
 
 

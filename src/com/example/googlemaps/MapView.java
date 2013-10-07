@@ -1,6 +1,7 @@
 package com.example.googlemaps;
 /**
  * Description of MapView
+ * Display map 
  *
  * @author chamath sajeewa
  * chamaths.10@cse.mrt.ac.lk
@@ -46,9 +47,10 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
     private Location location;
     private DBAccessTask dAccessTask;
     private LocationClient mLocationClient;
-    private GMapV2Direction gMapV2Direction;
+    private GoogleMapV2Direction gMapV2Direction;
     private boolean isNetworkAvailable;
     Document doc;
+    // LocationRequest is used by the location listeners to register in location client
     private static final LocationRequest REQUEST = LocationRequest.create()
             .setInterval(5000)         // 5 seconds
             .setFastestInterval(16)    // 16ms
@@ -58,7 +60,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_page);
         context=this;
-        gMapV2Direction=new GMapV2Direction();
+        gMapV2Direction=new GoogleMapV2Direction();
         dAccessTask=new DBAccessTask();
         dAccessTask.delegate=this;
         isNetworkAvailable=false;
@@ -81,6 +83,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
             mLocationClient.disconnect();
         }
     }
+    //single top activity- defined in manifest
     @Override
 	protected void onNewIntent(Intent intent) {
 		dAccessTask=new DBAccessTask();
@@ -88,7 +91,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
 	    setIntent(intent);
 	    handleIntent(intent);
 	}
-
+    //intent is used when user clicks and item in the suggestion menu, 
 	private void handleIntent(Intent intent) {
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 	    	String query;
@@ -107,23 +110,24 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
 		
 		dAccessTask.execute(query);
 	}
-   
+   //access database to find geocodes of destination
 	private class DBAccessTask extends AsyncTask<String,Void,Location>{
 		MapDatabase mapDatabase=new MapDatabase(context);
-		LatLng sourcePosition;//=new LatLng(6.795064,79.900769);
-		LatLng destPosition;//=new LatLng(6.798238,79.902695);
+		LatLng sourcePosition;
+		LatLng destPosition;
 		double geoCodes[]=new double[2];
 		
 		public AsyncResponse delegate=null;
 		@Override
 		protected Location doInBackground(String... params) {
 			
-			//mapDatabase.addNewPlace("Female Hostel", 6.797016,79.902593);
-			//mapDatabase.addNewPlace("Male Hostel", 6.797692,79.902464);
+			
 			mLocationClient.connect();
+			//wait for connection
 			while(!mLocationClient.isConnected()){
 				
 			}
+			//get last know location to derive geocodes of source position
 			android.location.Location l=mLocationClient.getLastLocation();
 			sourcePosition=new LatLng(l.getLatitude(), l.getLongitude());
 			geoCodes=mapDatabase.getPlaceInfo(params[0]);
@@ -134,7 +138,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
 			destPosition=new LatLng(geoCodes[0], geoCodes[1]);
 			if(isNetworkAvailable()){
 				isNetworkAvailable=true;
-			 doc=gMapV2Direction.getDocument(sourcePosition, destPosition,GMapV2Direction.MODE_WALKING);
+			 doc=gMapV2Direction.getDocument(sourcePosition, destPosition,GoogleMapV2Direction.MODE_OF_WALKING);
 			}
 			return location;
 			
@@ -166,9 +170,9 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
         PolylineOptions rectLine = new PolylineOptions().width(3).color(Color.RED);
 
         for (int i = 0; i < directionPoint.size(); i++) {
-          rectLine.add(directionPoint.get(i));
+          rectLine.add(directionPoint.get(i));// add each point of the path to the polyline
         }
-         mMap.addPolyline(rectLine);
+         mMap.addPolyline(rectLine);//add polyine to the map
 		}
 		else {
 			 Toast toast = Toast.makeText(this,"No Internet Conenction, Directions Can Not Be Displayed!!", Toast.LENGTH_LONG);
@@ -176,7 +180,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
 		}
 		
 	}
-
+     // for the button
 	 public void search(View view){
 	 		
 	 		onSearchRequested();
@@ -186,16 +190,14 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
 	
 	
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
+        
         if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
+            //  obtain the map from the SupportMapFragment.
         	
-        	mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+        	mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
             
             
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
+           if (mMap != null) {
                 setUpMap();
                 mMap.setMyLocationEnabled(true);
                 mMap.setOnMyLocationButtonClickListener(this);
@@ -204,8 +206,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
     }
     private void setUpLocationClientIfNeeded() {
         if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getApplicationContext(),
+            mLocationClient = new LocationClient(getApplicationContext(),
                     this,  // ConnectionCallbacks
                     this); // OnConnectionFailedListener
         }
@@ -223,7 +224,7 @@ public class MapView extends FragmentActivity implements AsyncResponse, Connecti
     	 settings.setZoomControlsEnabled(true);
     	 settings.setZoomGesturesEnabled(true);
        
-        mMap.addMarker(new MarkerOptions().position(new LatLng(6.796856,79.901737)).title("The University of Moratuwa ").snippet(" Campus Road \n Moratuwa \n 10400 \n Phone: 011 2 650534 \n Founded: 1972"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(6.796856,79.901737)).title("The University of Moratuwa ").snippet(" Campus Road \n Moratuwa \n 10400 \n Phone: 011 2 650534 "));
        
        
     }

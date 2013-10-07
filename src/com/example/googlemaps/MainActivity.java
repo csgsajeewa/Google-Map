@@ -1,5 +1,11 @@
 package com.example.googlemaps;
-
+/**
+ * Description of XML Parser
+ * 
+ *
+ * @author chamath sajeewa
+ * chamaths.10@cse.mrt.ac.lk
+ */
 
 
 import android.app.Activity;
@@ -25,12 +31,7 @@ public class MainActivity extends Activity{
 		
 	}
     
-   //  public void showMyLocation(View view){
-		
-	//	Intent intent = new Intent(this, UserLocation.class);
-	//	startActivity(intent);
-		
-	//}
+   
      public void showMapDB(View view){
  		
  		Intent intent = new Intent(this, DBActivity.class);
@@ -38,13 +39,4 @@ public class MainActivity extends Activity{
  		
  	}
      
-   //  public void goToSearch(View view){
-  		
-  	//	Intent intent = new Intent(this, SearchEngine.class);
-  //		startActivity(intent);
-  		
-  //	}
-	
-
-    
 }

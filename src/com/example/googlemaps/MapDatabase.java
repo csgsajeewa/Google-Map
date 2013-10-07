@@ -1,12 +1,13 @@
 package com.example.googlemaps;
 /**
  * Description of MapDatabase
+ * Represent the underlying database and act as a content provide for suggestion menu
  *
  * @author chamath sajeewa
  * chamaths.10@cse.mrt.ac.lk
  */
 
-import android.app.SearchManager;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,30 +21,25 @@ import android.util.Log;
 public class MapDatabase extends ContentProvider{
   
   public static final String KEY_ID = "_id";
-  public static final String SUGGEST_COLUMN_TEXT_1="suggest_text_1";
-  public static final String SUGGEST_COLUMN_INTENT_DATA="suggest_intent_data";
-  //The name and column index of each column in your database.
-  //These should be descriptive.
+  public static final String SUGGEST_COLUMN_TEXT_1="suggest_text_1"; // for suggestion menu
+  public static final String SUGGEST_COLUMN_INTENT_DATA="suggest_intent_data"; // for suggestion menu
   public static final String PLACE =   "PLACE";
   public static final String LATITUDE ="LATITUDE";
   public static final String LONGITUDE ="LONGITUDE";
-  //TODO: Create public field for each column in your table.
-  /***/
-
-
-  // Database open/upgrade helper
+ 
   private MapDBOpenHelper mapDBOpenHelper;
-   public MapDatabase() {
+   //two constructors
+  //this is for extending ContentProvider- required by the system
+  public MapDatabase() {
 	
     }
 
-
+  // this is used within the application
   public MapDatabase(Context context) {
-    mapDBOpenHelper = new MapDBOpenHelper(context, MapDBOpenHelper.DATABASE_NAME, null, 
-                                              MapDBOpenHelper.DATABASE_VERSION);
+    mapDBOpenHelper = new MapDBOpenHelper(context, MapDBOpenHelper.DATABASE_NAME, null, MapDBOpenHelper.DATABASE_VERSION);
   }
   
-  // Called when you no longer need access to the database.
+  // Called when  no longer need access to the database.
   public void closeDatabase() {
     mapDBOpenHelper.close();
   }
@@ -51,15 +47,11 @@ public class MapDatabase extends ContentProvider{
   
   private Cursor getPlaceLongLat(String place1) {
     
-    // Specify the result column projection. Return the minimum set
-    // of columns required to satisfy your requirements.
-    String[] result_columns = new String[] { 
-      KEY_ID, PLACE,LATITUDE,LONGITUDE }; 
+    // Specify the result column projection.
+    String[] result_columns = new String[] {KEY_ID, PLACE,LATITUDE,LONGITUDE}; 
     
-    // Specify the where clause that will limit our results.
+    // Specify the where clause 
     String where = SUGGEST_COLUMN_INTENT_DATA + "=" +"'"+ place1 + "'";
-    
-    // Replace these with valid SQL statements as necessary.
     String whereArgs[] = null;
     String groupBy = null;
     String having = null;
@@ -67,49 +59,33 @@ public class MapDatabase extends ContentProvider{
     
     SQLiteDatabase db = mapDBOpenHelper.getWritableDatabase();
     Cursor cursor = db.query(MapDBOpenHelper.DATABASE_TABLE,  result_columns, where,whereArgs, groupBy, having, order);
-    //
     return cursor;
   }
   
   public double[] getPlaceInfo(String place) {
     Cursor cursor = getPlaceLongLat(place);// get cursor
-    String place1;
+    
     double latitude=0;
     double longitude=0;
     double geoCodes[]=new double[2];
-    /**
-     *  Extracting values from a Cursor
-     */
     
-
-    // Find the index to the column(s) being used.
-    int PLACE_INDEX =cursor.getColumnIndexOrThrow(PLACE);
+    // Find the index to the columns being used.
     int LATITUDE_INDEX =cursor.getColumnIndexOrThrow(LATITUDE);
     int LONGITUDE_INDEX =cursor.getColumnIndexOrThrow(LONGITUDE);
 
     // Iterate over the cursors rows. 
-    // The Cursor is initialized at before first, so we can 
-    // check only if there is a "next" row available. If the
-    // result Cursor is empty this will return false.
-    while (cursor.moveToNext()) {
-    	 place1=cursor.getString(PLACE_INDEX);
+   while (cursor.moveToNext()) {
+    	
          latitude= cursor.getDouble(LATITUDE_INDEX);
          longitude=cursor.getDouble(LONGITUDE_INDEX);
          geoCodes[0]=latitude;
          geoCodes[1]=longitude;
-      
-      
     }
-
-    
-    
-    return geoCodes;
+      return geoCodes;
   }
   
   public void addNewPlace(String place, double latitude, double longitude) {
-    /**
-     * Listing 8-5: Inserting new rows into a database
-     */
+    
     // Create a new row of values to insert.
     ContentValues newValues = new ContentValues();
   
@@ -119,17 +95,15 @@ public class MapDatabase extends ContentProvider{
     newValues.put(SUGGEST_COLUMN_INTENT_DATA , place);
     newValues.put(LATITUDE, latitude);
     newValues.put(LONGITUDE, longitude);
-    // [ ... Repeat for each column / value pair ... ]
+    
   
     // Insert the row into your table
     SQLiteDatabase db = mapDBOpenHelper.getWritableDatabase();
     db.insert(MapDBOpenHelper.DATABASE_TABLE, null, newValues); 
-  }
+   }
   
   public void updatePlaceInfo(String place, double latitude, double longitude) {
-    /**
-     * Listing 8-6: Updating a database row
-     */
+   
     // Create the updated row Content Values.
     ContentValues updatedValues = new ContentValues();
   
@@ -137,10 +111,8 @@ public class MapDatabase extends ContentProvider{
     updatedValues.put(LATITUDE, latitude);
     updatedValues.put(LONGITUDE, longitude);
     
-    // [ ... Repeat for each column to update ... ]
-  
     // Specify a where clause the defines which rows should be
-    // updated. Specify where arguments as necessary.
+    // updated. 
     String where = PLACE + "=" + place;
     String whereArgs[] = null;
   
@@ -151,12 +123,10 @@ public class MapDatabase extends ContentProvider{
   }
   
   
-  /**
-   * Listing 8-2: Implementing an SQLite Open Helper
-   */
+  //SQLiteOpenHelper-A helper class to manage database creation and version management.
   private static class MapDBOpenHelper extends SQLiteOpenHelper {
     
-    private static final String DATABASE_NAME = "MapDatabase7.db";
+    private static final String DATABASE_NAME = "MapDatabase8.db";
     private static final String DATABASE_TABLE = "PLACES";
     private static final int DATABASE_VERSION = 1;
     
@@ -175,36 +145,26 @@ public class MapDatabase extends ContentProvider{
       super(context, name, factory, version);
     }
 
-    // Called when no database exists in disk and the helper class needs
-    // to create a new one.
+    // Called when no database exists in disk and the helper class needs to create a new one.
     @Override
     public void onCreate(SQLiteDatabase db) {
       db.execSQL(DATABASE_CREATE);
     }
 
-    // Called when there is a database version mismatch meaning that
-    // the version of the database on disk needs to be upgraded to
-    // the current version.
+    // Called when there is a database version mismatch meaning that the version of the database on disk needs to be upgraded to the current version.
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, 
-                          int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
       // Log the version upgrade.
-      Log.w("TaskDBAdapter", "Upgrading from version " +
-        oldVersion + " to " +
-        newVersion + ", which will destroy all old data");
+      Log.w("TaskDBAdapter", "Upgrading from version " +oldVersion + " to " +newVersion + ", which will destroy all old data");
 
-      // Upgrade the existing database to conform to the new 
-      // version. Multiple previous versions can be handled by 
-      // comparing oldVersion and newVersion values.
-
-      // The simplest case is to drop the old table and create a new one.
+      //  drop the old table and create a new one.
       db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
       // Create a new one.
       onCreate(db);
     }
   }
 
-
+////////////////////////inherited from the content provider class////////////////////
 @Override
 public int delete(Uri arg0, String arg1, String[] arg2) {
 	// TODO Auto-generated method stub
@@ -231,19 +191,14 @@ public boolean onCreate() {
 	
 
 }
-
+//this is used by the system to provide suggestions using the menu
 @Override
-public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
-		String arg4) {
+public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,String arg4) {
 
-	Log.w("dsdsd","sdsdsdsddsds");
-	 String[] result_columns = new String[] {  KEY_ID, SUGGEST_COLUMN_TEXT_1,SUGGEST_COLUMN_INTENT_DATA}; 
-		 
-		    // Specify the where clause that will limit our results.
-	  String query = arg0.getLastPathSegment();
-		    String where = SUGGEST_COLUMN_TEXT_1+ " Like "+"'%"+ query +"%'";
-		    
-		    // Replace these with valid SQL statements as necessary.
+	String[] result_columns = new String[] {  KEY_ID, SUGGEST_COLUMN_TEXT_1,SUGGEST_COLUMN_INTENT_DATA}; 
+	// Specify the where clause 
+	String query = arg0.getLastPathSegment();
+    String where = SUGGEST_COLUMN_TEXT_1+ " Like "+"'%"+ query +"%'";
 		    String whereArgs[] = null;
 		    String groupBy = null;
 		    String having = null;
@@ -251,7 +206,6 @@ public Cursor query(Uri arg0, String[] arg1, String arg2, String[] arg3,
 		  
 		    SQLiteDatabase db = mapDBOpenHelper.getWritableDatabase();
 		    Cursor cursor = db.query(MapDBOpenHelper.DATABASE_TABLE,  result_columns, where,whereArgs, groupBy, having, order);
-		   Cursor c=cursor;
 		    return cursor;
 	  
 }
@@ -262,6 +216,6 @@ public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
 	return 0;
 }
 
-
+//////////////////////////////////////end of inherited methods///////////////////////////////////////////////////
 
 }

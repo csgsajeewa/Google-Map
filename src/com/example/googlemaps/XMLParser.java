@@ -1,6 +1,7 @@
 package com.example.googlemaps;
 /**
  * Description of XML Parser
+ * 
  *
  * @author chamath sajeewa
  * chamaths.10@cse.mrt.ac.lk

@@ -202,7 +202,7 @@ private int getNodeIndex(NodeList nl, String nodename) {
     }
     return -1;
 }
-//used by getDirections - net
+//used by getDirections - network
 private ArrayList<LatLng> decodePolyline(String encoded) {
     ArrayList<LatLng> point = new ArrayList<LatLng>();
     int index = 0, len = encoded.length();
